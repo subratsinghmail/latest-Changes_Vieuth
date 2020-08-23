@@ -1,0 +1,6 @@
+.md-form label {
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: red;
+}

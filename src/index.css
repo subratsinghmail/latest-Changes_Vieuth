@@ -1,0 +1,27 @@
+body,html{
+    width: 100%;
+    margin: 0;
+}
+.slick-prev {
+    left: 1% !important;
+    z-index: 1;
+    /* background-color: black !important;
+    color:black; */
+  }
+  .slick-next {
+    right: 1% !important;
+    z-index: 1;
+  }
+
+  .slick-prev:before {
+    color: black !important;
+  }
+  .slick-next:before {
+    color: black !important;
+  }
+  .slick-dots {
+      
+    left: 0%;
+    
+  }
+  
