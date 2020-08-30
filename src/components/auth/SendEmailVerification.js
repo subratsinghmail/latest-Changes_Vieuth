@@ -134,9 +134,7 @@ function SendEmailVerification(props) {
     )
 }
 
-SendEmailVerification.propTypes = {
 
-}
 
 export default SendEmailVerification;
 

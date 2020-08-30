@@ -14,9 +14,11 @@ import {
 	MDBBtn,
 } from 'mdbreact';
 import Spinner from '../layout/Spinner';
+
 import './login.css'
 import { useFormik } from 'formik';
-import { ToastContainer, toast } from 'react-toastify';
+import Loader from './Loader';
+//  react toastify here -- import { ToastContainer, toast } from 'react-toastify';
 
 
 
@@ -28,7 +30,8 @@ mutation login($email:String!, $password:String!){
   })
   {
     _id,
-    verified,
+	verified,
+	enabled,
 	role,
 	profile{
 		_id,
@@ -67,11 +70,7 @@ mutation login($email:String!, $password:String!){
   }
 }
 `;
-const sendEmailMutation = gql`
-	mutation {
-		verifyUserEmail(input: {})
-	}
-`;
+
 function LoginNew(props) {
    
     const formik = useFormik({
@@ -108,7 +107,7 @@ function LoginNew(props) {
 	  })
 	
 	
-	//const notify=(message)=>toast.error(message)
+	
 
 
 	const [show, setShow] = useState({
@@ -130,11 +129,10 @@ function LoginNew(props) {
     }
 
     
-     
    }
 	
 	
-	// if the user has already been logged in	
+	// if the user has already been logged in	. redirect to the dashboard.
 	useEffect(() => {
 		if (localStorage.user) {
 			// Set auth token header auth
@@ -146,9 +144,12 @@ function LoginNew(props) {
 
 	}, [])
 	
-	// for the errors
-	const [errors, setErrors] = useState('');
+	// for checking if there are any errors
+	const [error, setError] = useState(false);
 
+	//for the messages of the error
+	const [errorMsg,setErrorMsg]=useState('')
+	
 
 	 // the login mutation, has been initialised here.
 	
@@ -156,12 +157,14 @@ function LoginNew(props) {
 		loginMutation,
 		{
 			onCompleted(cd) {
+				setError(false)
 				console.log('data here' + JSON.stringify(cd));
 				const token = cd.login._id;
 				const userData = {
                     token,
                     role:cd.login.role,
 					verified: cd.login.verified,
+					enabled:cd.login.enabled,
 					fullName:cd.login.profile.fullName,
                       fName:cd.login.profile.fName,
                       lName:cd.login.profile.lName,
@@ -196,24 +199,23 @@ function LoginNew(props) {
 				}
 				
 				
-                 
+                  
 				props.loginUser(userData, props.history);
 			},
 			onError(err){
 				const AB = err.message.split(":");
-				setErrors(AB[1])
-				//console.log(AB[0]);
+				// setErrors(AB[1])
+				console.log(AB[0])
+				setErrorMsg(AB[0])
+			
+				setError(true)
+			
 			   	
 			}
 		}
 	);
 
 	
-
-	if (loading) {
-		return <Spinner />;
-	}
-
 	
 
 	return (
@@ -227,7 +229,7 @@ function LoginNew(props) {
 						className="img"
 					>
 						<img
-							src="https://image.freepik.com/vector-gratis/red-comunidad-empresarial-mapa-mundial_42077-1247.jpg"
+							src="email.svg"
 							style={{
 								width: '100%',
 								height: '100%',
@@ -292,7 +294,14 @@ function LoginNew(props) {
 							>
 								or
 							</p> 
-							<p className='red-text text-center'> {errors?errors:null} </p>
+							{error&&
+							
+							(<p className="note note-danger text-center">
+								{errorMsg}
+                         </p>)
+							
+							}
+							
 							<MDBInput
 								label="Type your email"
 								
@@ -350,9 +359,7 @@ function LoginNew(props) {
 							</div>
 
 
-							<ToastContainer
-								position='top-center'
-							/>
+							
 
 							<p className="text-right h6 mb-4 blue-text">
 								<Link to="/password/recover">Forgot Password?</Link>
@@ -361,13 +368,14 @@ function LoginNew(props) {
 								<button
 									className="btn blue-gradient   p-2 w-responsive rounded"
 									type="submit"
-									disabled={!(formik.dirty && formik.isValid )}
+									disabled={loading||!(formik.dirty && formik.isValid )}
 								 >
-								 Sign In
+									{loading && (<Loader />)}
+									{!loading&&(<span>Sign In</span>)}
 								</button>
 							</div>
 							{/* <MDBModalFooter className="mx-5 pt-3 mb-1"></MDBModalFooter> */}
-							<p className="text-center">
+							<p className="text-center mt-4">
 								<strong>Not a member?</strong>
 								
 								<strong className="blue-text ml-2">

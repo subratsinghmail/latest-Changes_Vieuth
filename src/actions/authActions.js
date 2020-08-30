@@ -3,7 +3,7 @@
 import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING ,UPDATE_CURRENT_USER} from './types';
 
 /*
-
+here we have used redux thunk.
 */
 
  // register user
@@ -25,27 +25,25 @@ export const loginUser = (user,history) => (dispatch) => {
   if (
      user.token!==null
   ) {
-    // const user = {
-    //   name: userData.name,
-    //   email: userData.email,
-    //   token:userData.token,
-    //   role:userData.role
-    // };
+    
     localStorage.setItem('user', JSON.stringify(user));
     
-    dispatch(setCurrentUser(user));
-  
-    if(user&&!user.verified){
+     dispatch(setCurrentUser((user)))
+    //sending the user to the verification platform/.
+    if(user&&!user.enabled){
       history.push('/send-email-verification')
+    } else {
+      if(user&&user.role.toString().toLowerCase()==='company'&&user.verified){
+        history.push('/company-dashboard')
+      }else if(user&&user.role.toString().toLowerCase()==='student'&&user.verified){
+        history.push('/dashboard')
+      }else if(user&&user.role.toString().toLowerCase()==='admin'&&user.verified){
+        history.push('/admin-dashboard')
+      }
+          
     }
-    if(user&&user.role.toString().toLowerCase()==='company'&&user.verified){
-      history.push('/company-dashboard')
-    }else if(user&&user.role.toString().toLowerCase()==='student'&&user.verified){
-      history.push('/dashboard')
-    }else if(user&&user.role.toString().toLowerCase()==='admin'&&user.verified){
-      history.push('/admin-dashboard')
-    }
-    
+      //one prop is also needed to.
+  
   }
 };
 

@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { useHistory } from 'react-router';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import { MDBBtn,MDBContainer,MDBRow,MDBCol} from 'mdbreact';
+import {MDBContainer,MDBRow,MDBCol} from 'mdbreact';
 import Loader from './Loader';
 import Check from './check.svg';
 import Cancel from './cancel.svg';
@@ -32,7 +32,7 @@ const sendVerificationCode=gql`
 
 `
 function ConfirmEmail(props) {
-    let history = useHistory();
+   
     
 
 
@@ -51,7 +51,7 @@ function ConfirmEmail(props) {
 
 
    //verify mutation hook initiated here
-    const [verifyFunction,{loading,error}]=useMutation(verifyEmailMutation,{
+    const [verifyFunction,{loading}]=useMutation(verifyEmailMutation,{
         onCompleted(cd) {
             setName(cd.verifyUserEmail.username)
             console.log("Confirm email data"+JSON.stringify(cd))
@@ -92,7 +92,7 @@ function ConfirmEmail(props) {
     useEffect(() => {
         verifyUser()
         console.log('ran')
-    }, [])
+    },)
 
 // the function for sending the mutation.
     const sendCodeFunc=()=>{
@@ -116,7 +116,7 @@ function ConfirmEmail(props) {
                         <div className='text-center mt-3'>
                         <div className=''>
                                     
-                                    <img src={errors?Cancel:Check} height='150' width='150'></img> 
+                                    <img src={errors?Cancel:Check} alt='img of mail' height='150' width='150'></img> 
                                     <h3 className='h3-responsive p-3 mt-2'>{errors ? errors : `congratulations ${name}`}</h3>
                                     <h5 className='h5 responsive'>{errors?'Please generate a new token':'your email has been verified'}</h5>
                                     <button type="submit" className="btn btn-info mt-4 w-50 text-center rounded"><Link style={{color:'white'}} to='/login'> Log In</Link></button>

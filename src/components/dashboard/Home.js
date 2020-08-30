@@ -50,7 +50,7 @@ function Home(props) {
     const [pageCount, setPageCount] = useState(1);
     const[title,setTitle]=useState('')
 	const limit = 8;
-	const { loading, error, data } = useQuery(allProjectsQuery, {
+	const { loading, data } = useQuery(allProjectsQuery, {
 		variables: {
             title:query,
 			page: pageCount,

@@ -17,20 +17,20 @@ mutation uploadVerificationDocument($file:Upload!){
     }
 }
 `
-//  // getting the cache
-const apolloCache = new InMemoryCache()
+// //  // getting the cache
+// const apolloCache = new InMemoryCache()
 
 
 
-const uploadLink = createUploadLink({
-    uri:'https://vieuth-backend.herokuapp.com/graphql',
-})
+// const uploadLink = createUploadLink({
+//     uri:'https://vieuth-backend.herokuapp.com/graphql',
+// })
 
 
-const client = new ApolloClient({
-    cache: apolloCache,
-    link:uploadLink
-})
+// const client = new ApolloClient({
+//     cache: apolloCache,
+//     link:uploadLink
+// })
 
 
 
@@ -51,32 +51,32 @@ export default function Upload() {
         e.preventDefault()
         console.log(file);
         console.log(fileName);
-        submit({
-            variables: {
-                file:file
-            }
-        })
+        // submit({
+        //     variables: {
+        //         file:file
+        //     }
+        // })
     }
 
-    const [submit, { loading, error}] = useMutation(send_file, {
-        onCompleted(cd) {
-            console.log(cd.uploadVerificationDocument.message);
-          },
-        onError(err) {
-              console.log(err.message);
-          }  
+    // const [submit, { loading, error}] = useMutation(send_file, {
+    //     onCompleted(cd) {
+    //         console.log(cd.uploadVerificationDocument.message);
+    //       },
+    //     onError(err) {
+    //           console.log(err.message);
+    //       }  
     
-    })
+    // })
 
 
-    if (loading) {
-        return `uploading`
-    }
+    // if (loading) {
+    //     return `uploading`
+    // }
     
 
 
     return (  
-           <ApolloProvider client={client}>
+        
             <div>
             <MDBContainer fluid>
                 
@@ -117,7 +117,7 @@ export default function Upload() {
                </div>
                 </MDBContainer>
                 </div>
-            </ApolloProvider>
+            
             
             
     )

@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 
 
 import './App.css';
-import Upload from './components/auth/Upload'
 import configureStore from './reducers/index';
 import store from "./store";
 import ConfirmEmail from './components/auth/ConfirmEmail'
@@ -31,14 +30,16 @@ import NavbarLogin from './components/dashboard/Navbar'
 import CreateProfile from './components/dashboard/CreateProfile'
 import EditProfile from './components/dashboard/EditProfile'
 import ProjectDetails from './components/dashboard/ProjectDetails'
-import {ApolloProvider} from '@apollo/react-hooks'
-import ApolloClient from 'apollo-boost'
 import DisplayProjects from './components/AdminDashboard/DisplayProjects'
 import Projects from './components/AdminDashboard/Projects'
 import UpdateProject from './components/AdminDashboard/UpdateProject'
 import PrivateRoutesAdmin from "./components/private-route/PrivateRoutesAdmin";
 
 
+//routes for the email.
+import PrivateRouteEmail from "./components/private-route/PrivateRouteEmail";
+import Hold from "./components/auth/Hold";
+import SendEmailVerification from "./components/auth/SendEmailVerification";
 // Check for token to keep user logged in
 
 
@@ -65,11 +66,14 @@ class App extends Component {
           <Route exact path="/login" component={Login} />
           <Route exact path="/password/recover" component={RecoverPass} />
           <Route exact path="/password/reset" component={UpdatePasswordForm} />
-          <Route exact path="/confirm-email/:token" component={ConfirmEmail}/>
-          <Route exact path="/send-email-verification" component={SendVerificationEmail}/>
-          <Route exact path="/Upload" component={Upload}/>
+          <Route exact path="/confirm-email/:token" component={ConfirmEmail} />
+          <Route exact path="/hold" component={Hold} />
+          <PrivateRouteEmail  exact path="/send-email-verification" component={SendEmailVerification}/>
           <Switch>
             {/* Student Dashboard */}
+
+            
+
             <PrivateRoute exact path="/dashboard" component={Dashboard} />
             <PrivateRoute exact path="/dashboard/profile" component={Profile} />
             <PrivateRoute exact path="/dashboard/profile/create-profile" component={CreateProfile} />

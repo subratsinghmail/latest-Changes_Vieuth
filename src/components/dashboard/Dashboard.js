@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-// import PrivateRoute from '../private-route/'
-// import NavbarPage from '../CommonLayout/Navbar'
+//import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from './Navbar'
 import Home from './Home'
 import Profile from './Profile'

@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import gql from 'graphql-tag'; // for writing graph ql queries.
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'; // helps to connect the store with the component
@@ -13,13 +13,11 @@ import {
 	MDBCol,
 } from 'mdbreact'; // mdb importing for the UI
 import { Link, withRouter } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify'; // react toastify import
+//import { ToastContainer, toast } from 'react-toastify'; // react toastify import
 import './Register.css';
 import { useFormik } from 'formik'; // importing the the use formik library.
 import Recaptcha from 'react-recaptcha';
-
-
-
+import Loader from './Loader';
     
 const register_mutation = gql`
 	mutation registerUser(
@@ -48,8 +46,6 @@ const register_mutation = gql`
 
 function Register(props) {
 	
-
-	 // react toastify initialization.
    
 	//initilisation formik here
 
@@ -62,19 +58,29 @@ function Register(props) {
             role: '',
             gender:''
         },
-        onSubmit: values => {
-            auth({
-                variables: {
-                    fName: values.fName,
-                    email: values.email,
-                    password: values.password,
-                    gender: values.gender,
-                    role:values.role
-                    
-                    
-                }
-            })
+		onSubmit: values => {
+			if (captchaVerified == true) {
+				auth({
+					variables: {
+						fName: values.fName,
+						email: values.email,
+						password: values.password,
+						gender: values.gender,
+						role:values.role
+						
+						
+					}
+				})  
+			} else {
+				alert('Please verify that you are a human.')
+			}	
+  
+
+
             
+
+			
+			
         },
         validate: values => {
             let errors = {}
@@ -94,11 +100,11 @@ function Register(props) {
                 errors.cnfPassword='Passwords do not match'
             }
 
-            if (values.gender === '0') {
+            if (values.gender === '0'||values.gender=='') {
                 errors.gender='Required'
             }
 
-            if (values.role === '0') {
+            if (values.role == '0'||values.role=='') {
                 errors.role='Required'
             }
 
@@ -108,11 +114,15 @@ function Register(props) {
          
     }) 
 	
+
+
+
+	 // password toggler
 		const [show, setShow] = useState({
     password: false,
     status:'Show'
   })
-
+     // password toggler
 	const handlePassword = (e) => {
     if (show.password == false) {
       setShow({
@@ -124,27 +134,24 @@ function Register(props) {
         password: false,
         status:'Show'
         })
-    }
+	}
+		
+		
 
     
      
    }
 
-	// function recaptchaLoaded() {
-	// 	console.log('recaotcha is loaded');
-	// }
-  
-	const recaptchaLoaded = () => {
-		 console.log('loaded');
-	}
-	
 	
 
+    // captcha state for verification starts here
+   const [captchaVerified,setCaptchaVerified]=useState(false)
+
+  // the verify call function
 	function verifyCall(response) {
 		if (response) {
-			console.log('congo verified');
-		} else {
-			console.log('not verifed');
+			
+		   setCaptchaVerified(true)
 		}
 	 }
 
@@ -174,7 +181,7 @@ function Register(props) {
 	} else
 		return (
 			<div style={{ padding: '3%' }} className="mt-3">
-				<ToastContainer/>
+			   
 				<MDBContainer className="contWidth" fluid>
 					<MDBRow center>
 						<MDBCol
@@ -302,7 +309,7 @@ function Register(props) {
 										<option value="company">Company</option>
 									   </select>
 									  <div className='red-text text-center'>
-                                        { formik.touched.role&&formik.errors.role?<div>{formik.errors.role}</div>:null}
+                                        {formik.touched.role&&formik.errors.role?<div>{formik.errors.role}</div>:null}
                                       </div>
 								</div>
 								<div className="pb-2 mb-2">
@@ -318,7 +325,7 @@ function Register(props) {
 										onBlur={formik.handleBlur}
 									>
 										<option value="0">
-											Choose your Role
+											Choose your Gender
 										</option>
 										<option value="Male">Male</option>
 										<option value="Female">Female</option>
@@ -330,14 +337,12 @@ function Register(props) {
 									<div className='d-flex justify-content-center p-2'>
 								<Recaptcha
 									sitekey="6Lep48AZAAAAAJ__A5vnk1W7RZSVdTaEsDJXlcTx"
+									verifyCallback={verifyCall}
+			
 									
-									onloadCallback={recaptchaLoaded()}
-									verifyCallbackName='verifyCall'
-									onloadCallbackName='recaptchaLoaded'
-									verifyCallback={verifyCall()}
-									render='onload'
+								
 									theme='light'
-								   
+								    
 									/>
 									</div>
 								</div>
@@ -348,7 +353,8 @@ function Register(props) {
 										type="submit"
 										disabled={!(formik.dirty&& formik.isValid)}
 								     	>
-										Register
+										{loading && (<Loader />)}
+                                {!loading&& <span>Register</span>}
 									</button>
 								</div>
 								
@@ -367,12 +373,16 @@ function Register(props) {
 		);
 }
 
+
+// checks what the data type of the store value returned is
 Register.propTypes = {
 	registerUser: PropTypes.func.isRequired,
 	auth: PropTypes.object.isRequired,
 	errors: PropTypes.object.isRequired,
 };
 
+
+// maps state from the store to our component view.
 const mapStateToProps = (state) => ({
 	auth: state.auth,
 	errors: state.errors,
