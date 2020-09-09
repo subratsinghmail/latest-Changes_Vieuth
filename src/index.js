@@ -15,16 +15,22 @@ import {ApolloClient} from '@apollo/client'; // the client which lets us define 
 //import 'react-toastify/dist/ReactToastify.css'; // react toastify css file.
 import { createHttpLink } from 'apollo-link-http'; 
 import { InMemoryCache } from 'apollo-cache-inmemory'; // in memory cache for the create http link.
+import { createUploadLink } from 'apollo-upload-client';
 
 
+const apolloCache= new InMemoryCache()
 
- // client and cache both have been defiend here.
+ 
+//new upload link
+const uploadLink=createUploadLink({
+  uri:'https://vieuth-backend.herokuapp.com/graphql'
+})
+
+ // client and cache both have been defin here.
 const client = new ApolloClient({
-  link : createHttpLink({
-    uri: 'https://vieuth-backend.herokuapp.com/graphql',
-    credentials: 'same-origin'
-  }),
-  cache: new InMemoryCache()
+    cache:apolloCache,
+    link:uploadLink,
+    credentials:'same-origin'
 });
 
 

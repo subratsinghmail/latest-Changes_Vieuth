@@ -84,7 +84,7 @@ function LoginNew(props) {
 				variables: {
 					email: values.email,
 					password:values.password,
-				},
+				}
 			});
 			resetForm({values:''})
 
